@@ -21,10 +21,10 @@ This repository documents a comprehensive security and quality audit performed a
 
 | Severity | Count | Status |
 |----------|-------|--------|
-| 🔴 P0 — Critical (Secrets / Data Leak) | 8 | 🔧 In Progress |
-| 🟠 P1 — High (Security / Functionality) | 14 | ⏳ Pending |
-| 🟡 P2 — Medium (Best Practices) | 10 | ⏳ Pending |
-| 🔵 P3 — Low (Polish / Hardening) | 6 | ⏳ Pending |
+| 🔴 P0 — Critical (Secrets / Data Leak) | 8 | ✅ Resolved |
+| 🟠 P1 — High (Security / Functionality) | 14 | ✅ Resolved |
+| 🟡 P2 — Medium (Best Practices) | 10 | ✅ Resolved |
+| 🔵 P3 — Low (Polish / Hardening) | 6 | ✅ Resolved |
 
 ## Documentation
 
