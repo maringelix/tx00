@@ -106,9 +106,55 @@
 | dx01 | ✅ Done | `5f9b8d5` |
 | tx00 | ✅ Done | tracking repo |
 
-### Remaining P2/P3 (Nice-to-Have)
-- [ ] Pin GitHub Actions to SHA instead of tags
-- [ ] Add `.pre-commit-config.yaml` to all repos
-- [ ] Add `.editorconfig` to all repos
-- [ ] Add `CODEOWNERS` to all repos
-- [ ] Remaining cleanup docs in tx01/tx02/tx03 (OBSERVABILITY.md, QUICK_REFERENCE.md, etc.)
+### Remaining
+- [ ] Add `.pre-commit-config.yaml` to all repos (optional)
+
+---
+
+## Session 3 — Polish & Hardening
+
+**Date:** 2025-02-24
+
+### Excess Documentation Cleanup
+- [x] **tx01**: Deleted 7 files (1,880 lines) — BACKUP_STRATEGY, OBSERVABILITY, QUICK_REFERENCE, k8s/METRICS_SERVER_CONDITIONAL, k8s/MICRO_STACK, k8s/T3_MICRO_OPTIMIZATIONS, terraform/IMPORT_EBS_CSI
+- [x] **tx02**: Deleted 10 files (4,800+ lines) — ARGOCD, BACKUP_STRATEGY, DEPLOYMENT_GUIDE, QUICK_REFERENCE, SECURITY_INFRASTRUCTURE, SERVICE_MESH, k8s/SERVICE_MESH_README, k8s/observability/{ACCESS, IMPLEMENTATION, SLACK_SETUP}
+- [x] **tx03**: Deleted 8 files + entire docs/ directory (5,800+ lines) — ARCHITECTURE, ARGOCD, OBSERVABILITY, docs/{BACKUP-RESTORE, ISTIO-IMPLEMENTATION, SERVICE-MESH-COMPARISON, SERVICE-MESH-FINAL-DECISION, SERVICE-MESH-IMPLEMENTATION-SUMMARY, WORKLOAD_IDENTITY_SETUP}
+- [x] **dx03**: Deleted 2 files (1,055 lines) — ARCHITECTURE, docs/WORKLOAD_IDENTITY_SETUP
+- [x] Rewrote bloated READMEs to concise English tables: tx01 SECURITY.md (140→22L), tx01 k8s/policies/README.md (440→24L), tx02 k8s/{policies,observability}/README.md, tx03 k8s/{security,argocd,observability}/README.md, tx03 k8s/istio/{asm/README-ASM,ambient-mesh/README}
+
+### Repository Standards
+- [x] Added `.editorconfig` to all 7 repos (utf-8, LF, 2-space indent, trim trailing whitespace)
+- [x] Added `LICENSE` (MIT) to tx01 and dx01 (others already had one)
+- [x] Added/standardized `.github/CODEOWNERS` across all 7 repos (`* @maringelix`)
+
+### Supply-Chain Security: SHA Pinning
+- [x] Pinned **all GitHub Actions to SHA** across every workflow file (~60 files, 29 unique actions)
+- Actions pinned: actions/checkout, actions/setup-node, actions/setup-python, actions/cache, actions/upload-artifact, actions/download-artifact, docker/login-action, docker/build-push-action, docker/setup-buildx-action, docker/metadata-action, azure/login, azure/webapps-deploy, google-github-actions/auth, google-github-actions/setup-gcloud, google-github-actions/get-gke-credentials, google-github-actions/deploy-cloudrun, aws-actions/configure-aws-credentials, aws-actions/amazon-ecr-login, hashicorp/setup-terraform, aquasecurity/trivy-action, github/codeql-action/init, github/codeql-action/autobuild, github/codeql-action/analyze, gitleaks/gitleaks-action, slackapi/slack-github-action, zaproxy/action-full-scan, peter-evans/create-pull-request, dorny/paths-filter, softprops/action-gh-release
+- Final verification: `grep -rnP 'uses:.*@v\d'` returns **zero results** across all repos
+
+### Additional Deploy Safety Fixes
+- [x] Found and fixed **4 more deploy workflows** with push triggers (missed in Session 2):
+  - `tx02/deploy-argocd.yml` → workflow_dispatch only
+  - `tx02/terraform-apply.yml` → workflow_dispatch only (was deploying infra on push!)
+  - `dx02/deploy-aks.yml` → workflow_dispatch only
+  - `dx02/docker-build.yml` → workflow_dispatch only
+- Total deploy workflows secured: **10** (6 from Session 2 + 4 new)
+
+### Portuguese → English Translation
+- [x] **Terraform**: All variable descriptions and comments across tx01 (vpc.tf, ecr.tf, provider.tf, modules/*.tf), tx02 (all modules, prd/, stg/, root vars/outputs), tx03 workflows
+- [x] **Workflows**: Echo/log messages in tx01 (terraform-bootstrap, manage-environment), tx02 (chaos-engineering, terraform-apply, security-infrastructure), tx03 (cost-management, backup-restore, istio-apply-configs, istio-fix-sidecar)
+- [x] **App Source**: dx01 server/index.js (3 API messages), dx01 client/App.jsx (6 UI labels), dx02 server/index.js (2 comments + 1 message), dx02 client/App.jsx (6 UI labels)
+- Final verification: `grep -rnP "[àáâãéêíóôõúçÁÀÂÃÉÊÍÓÔÕÚÇ]"` returns **zero results** across all repos
+
+### Commits
+
+| Repo | Commit | Stats |
+|------|--------|-------|
+| tx01 | `bcfd792` | 40 files changed, +186 −2,567 |
+| tx02 | `7e6dfb2` | 49 files changed, +233 −5,281 |
+| tx03 | `441a7c9` | 32 files changed, +228 −6,273 |
+| dx01 | `7b309bc` | 7 files changed, +71 −21 |
+| dx02 | `8ed14fe` | 8 files changed, +60 −63 |
+| dx03 | `f542f79` | 6 files changed, +36 −1,063 |
+
+**Session total: −14,757 lines removed (net)**
