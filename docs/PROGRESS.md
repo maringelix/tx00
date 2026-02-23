@@ -158,3 +158,59 @@
 | dx03 | `f542f79` | 6 files changed, +36 −1,063 |
 
 **Session total: −14,757 lines removed (net)**
+
+---
+
+## Session 4 — History Cleanup & Final Hardening
+
+**Date:** 2026-02-23
+
+### P0: Git History Cleanup
+- [x] **tx02**: Removed `terraform/prd/tfplan` binary from entire git history using `git filter-repo --path --invert-paths`
+- [x] **tx02**: Scrubbed `adminPassword: admin` / `adminPassword=admin` from entire git history using `git filter-repo --replace-text`
+- [x] **tx03**: Scrubbed all secrets from entire git history using `git filter-repo --replace-text`:
+  - `Admin123456` (Grafana password) → `REDACTED_PASSWORD`
+  - `tx03-444615` (GCP project ID) → `REDACTED_PROJECT_ID`
+  - `project-28e61e96-b6ac-4249-a21f` (GCP project UUID) → `REDACTED_PROJECT_UUID`
+  - All service account emails → `REDACTED_SA@REDACTED_PROJECT.iam.gserviceaccount.com`
+- [x] Both repos force-pushed with rewritten history
+- [x] tx02 branch protection temporarily removed, then restored (required_pull_request_reviews + dismiss_stale_reviews)
+- Verification: `git log --all -p -S "<secret>"` returns zero results for all scrubbed strings
+
+### P3: Pre-commit Hooks
+- [x] Added `.pre-commit-config.yaml` to all 6 repos:
+  - **tx01/tx02/tx03** (Terraform): `pre-commit-hooks` v6.0.0 + `gitleaks` v8.30.0 + `pre-commit-terraform` v1.105.0 (terraform_fmt, terraform_validate)
+  - **dx01/dx02/dx03** (App): `pre-commit-hooks` v6.0.0 + `gitleaks` v8.30.0 + `no-commit-to-branch`
+  - All hooks: trailing-whitespace, end-of-file-fixer, check-yaml, check-json, check-merge-conflict, detect-private-key
+
+### P3: Package Lock Files
+- [x] **dx01**: Generated and committed `package-lock.json` for root, server/, client/
+- [x] **dx02**: Removed `package-lock.json` from `.gitignore`, generated and committed lock files for root, server/, client/
+
+### Commits
+
+| Repo | Commit | Description |
+|------|--------|-------------|
+| tx01 | `63554c9` | .pre-commit-config.yaml |
+| tx02 | `19cb7f0` | .pre-commit-config.yaml (history rewritten: tfplan + adminPassword scrubbed) |
+| tx03 | `abb1258` | .pre-commit-config.yaml (history rewritten: all secrets scrubbed) |
+| dx01 | `08a2b5e` | .pre-commit-config.yaml + package-lock.json |
+| dx02 | `065ce77` | package-lock.json + .gitignore fix |
+| dx02 | `b99667d` | .pre-commit-config.yaml |
+| dx03 | `c46a10a` | .pre-commit-config.yaml |
+
+---
+
+## Final Status
+
+All remediation items from the original audit are now **complete**:
+
+| Priority | Items | Status |
+|----------|-------|--------|
+| P0 | Secrets sanitized (files + git history), tfplan removed | ✅ Done |
+| P1 | READMEs rewritten, CI fixed, SSH hardened, artifacts cleaned | ✅ Done |
+| P2 | Container security, SECURITY.md, DB mismatch, docs cleanup | ✅ Done |
+| P3 | SHA pinning, .pre-commit-config, .editorconfig, CODEOWNERS, package-lock | ✅ Done |
+
+Only optional/cosmetic item remaining:
+- [ ] Add `CONTRIBUTING.md` to repos (not required for portfolio)

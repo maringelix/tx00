@@ -20,13 +20,14 @@
 - [x] Remove Grafana `admin/Admin123456` from README
 - [x] Replace GCP Project ID with placeholder `<PROJECT_ID>` in 15+ files
 - [x] Remove service account email from Terraform files
-- **Note:** Git history still contains secrets — consider `git filter-repo` or repo recreation
+- [x] **Git history scrubbed** with `git filter-repo --replace-text` (Admin123456, tx03-444615, project UUID, service account emails)
 
 ### P0-2: Remove tfplan from tx02 ✅
 - [x] Delete `terraform/prd/tfplan` binary
 - [x] Add `*.tfplan` and `tfplan` to `.gitignore`
-- [x] Remove from Git history with `git filter-repo`
+- [x] **Git history scrubbed** with `git filter-repo --path --invert-paths` (tfplan removed from all commits)
 - [x] Remove Grafana `adminPassword: admin` from K8s manifests
+- [x] **Git history scrubbed** with `git filter-repo --replace-text` (adminPassword=admin replaced in all commits)
 
 ### P0-3: Fix SSH 0.0.0.0/0 in tx01 ✅
 - [x] Change `cidr_blocks` to `var.ssh_allowed_cidr`
@@ -107,12 +108,13 @@
 ### P3-1: Supply chain security ✅
 - [x] All repos: Pin GitHub Actions to SHA (29 unique actions across ~60 workflow files)
 - [x] dx01: Commit `package-lock.json` (removed from `.gitignore`)
+- [x] dx02: Commit `package-lock.json` (removed from `.gitignore`)
 
 ### P3-2: Repository standards ✅
 - [x] All repos: Add `.editorconfig` (utf-8, LF, 2-space indent)
 - [x] All repos: Add `CODEOWNERS` (`* @maringelix`)
 - [x] tx01, dx01: Add `LICENSE` (MIT)
-- [ ] All repos: Add `.pre-commit-config.yaml` with secret scanning (optional)
+- [x] All repos: Add `.pre-commit-config.yaml` (gitleaks + pre-commit-hooks + terraform hooks)
 
 ### P3-3: Deploy workflow safety ✅
 - [x] 10 deploy workflows converted to `workflow_dispatch` only across all repos
