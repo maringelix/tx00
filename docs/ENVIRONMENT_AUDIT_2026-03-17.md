@@ -7,17 +7,12 @@
 
 ## 1. Cloud CLI Status
 
-| CLI | User / Account | Status |
-|-----|---------------|--------|
-| AWS | `devops-tx01` / `REDACTED` | ✅ Active |
-| GCP | `redacted@example.com` / `REDACTED` | ✅ Active () |
+| CLI | User | Status |
+|-----|------|
+| AWS | `devops-tx01` | ✅ Active |
 | Azure | Not installed | ❌ Not applicable for portfolio |
 
-**AWS Access Keys:**
-- `REDACTED` — Active, created 2025-11-29 (~3.5 months old)
-- `REDACTED` — Active, created 2025-11-29 (~3.5 months old)
-
-> ⚠️ Two active keys — best practice is to keep only one. Rotate/delete one before going to production.
+> ⚠️ Two active IAM access keys found — best practice is to keep only one. Rotate/delete one before going to production.
 
 ---
 
